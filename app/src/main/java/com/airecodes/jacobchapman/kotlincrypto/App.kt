@@ -5,6 +5,7 @@ import android.arch.persistence.room.Room
 import com.airecodes.jacobchapman.kotlincrypto.models.AppDatabase
 import com.airecodes.jacobchapman.kotlincrypto.models.CryptoCurrencyRepo
 import com.airecodes.jacobchapman.kotlincrypto.models.api.CoinMarketCapService
+import com.airecodes.jacobchapman.kotlincrypto.viewmodels.CurrencyListViewModel
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -21,8 +22,11 @@ class App : Application() {
         private lateinit var coinMarketCapService: CoinMarketCapService
         private lateinit var appDatabase: AppDatabase
         private lateinit var cryptoCurrencyRepo: CryptoCurrencyRepo
-    }
+        private lateinit var currencyListViewModel: CurrencyListViewModel
 
+
+        fun injectCurrencyListViewModel() = currencyListViewModel
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -37,7 +41,6 @@ class App : Application() {
         appDatabase = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "CryptoCurrencyDb").build()
 
         cryptoCurrencyRepo = CryptoCurrencyRepo(coinMarketCapService, appDatabase.cryptoCurrencyDao())
-
-
+        currencyListViewModel = CurrencyListViewModel(cryptoCurrencyRepo)
     }
 }

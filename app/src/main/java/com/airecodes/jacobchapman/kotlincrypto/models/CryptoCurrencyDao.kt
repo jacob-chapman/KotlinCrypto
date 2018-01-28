@@ -17,7 +17,7 @@ interface CryptoCurrencyDao {
     @Query("select * from cryptoCurrency")
     fun getAllCurrencies(): Single<List<CryptoCurrency>>
 
-    @Query("select * from cryptoCurrency where symbol = :p0")
+    @Query("select * from cryptoCurrency where symbol = :symbol")
     fun getCurrency(symbol: String) : CryptoCurrency
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

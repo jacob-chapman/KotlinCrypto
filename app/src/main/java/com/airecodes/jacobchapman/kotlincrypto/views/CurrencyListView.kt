@@ -12,6 +12,8 @@ import com.airecodes.jacobchapman.kotlincrypto.R
 import com.airecodes.jacobchapman.kotlincrypto.models.CryptoCurrency
 import com.airecodes.jacobchapman.kotlincrypto.viewmodels.CurrencyList
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.currency_item.view.*
 import kotlinx.android.synthetic.main.fragment_currency_list.*
@@ -33,29 +35,43 @@ class CurrencyListView : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         currency_list.layoutManager = LinearLayoutManager(context)
+        currency_list.adapter = CurrencyListRecyclerAdapter(CurrencyList(emptyList(), "Coming Soon"))
     }
 
     override fun onStart() {
         super.onStart()
 
-       currencyListViewModel.getCurrencies()
+       subscribe(currencyListViewModel.getCurrencies()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         {showCurrencies(it)},
-                        {})
+                        {}))
     }
 
     fun showCurrencies(data: CurrencyList){
         if(data == null){
 
         }else{
-            currency_list.adapter = CurrencyListRecyclerAdapter(data)
+            (currency_list.adapter as CurrencyListRecyclerAdapter).updateList(data)
+            currency_list.adapter.notifyDataSetChanged()
         }
+    }
+
+    val subscriptions = CompositeDisposable()
+
+    fun subscribe(disposable: Disposable) : Disposable {
+        subscriptions.add(disposable)
+        return disposable
+    }
+
+    override fun onStop() {
+        super.onStop()
+        subscriptions.clear()
     }
 }
 
-class CurrencyListRecyclerAdapter(val currencyList: CurrencyList) : RecyclerView.Adapter<CurrencyListRecyclerAdapter.CurrencyViewHolder>() {
+class CurrencyListRecyclerAdapter(var currencyList: CurrencyList) : RecyclerView.Adapter<CurrencyListRecyclerAdapter.CurrencyViewHolder>() {
 
     /**
      * Called when RecyclerView needs a new [ViewHolder] of the given type to represent
@@ -120,10 +136,15 @@ class CurrencyListRecyclerAdapter(val currencyList: CurrencyList) : RecyclerView
         return currencyList.currencies.size
     }
 
+    fun updateList(updatedList: CurrencyList){
+        currencyList = updatedList
+    }
+
     class CurrencyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(currencyItem: CryptoCurrency){
             itemView.txt_symbol.text = currencyItem.symbol
+            itemView.txt_priceUSD.text = currencyItem.priceUSD.toString()
         }
 
     }

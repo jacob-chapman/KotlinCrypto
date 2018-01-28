@@ -19,7 +19,8 @@ class CryptoCurrencyRepo(val coinMarketCapService: CoinMarketCapService, val cry
 
 
     fun getCurrenciesFromDb(): Observable<List<CryptoCurrency>> {
-        return cryptoCurrencyDao.getAllCurrencies().toObservable()
+        return cryptoCurrencyDao.getAllCurrencies()
+                .toObservable()
     }
 
     fun getCurrenciesFromApi(): Observable<List<CryptoCurrency>> {

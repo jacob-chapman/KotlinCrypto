@@ -4,6 +4,7 @@ import android.app.Application
 import android.arch.persistence.room.Room
 import com.airecodes.jacobchapman.kotlincrypto.models.AppDatabase
 import com.airecodes.jacobchapman.kotlincrypto.models.CryptoCurrencyRepo
+import com.airecodes.jacobchapman.kotlincrypto.models.Migration1To2
 import com.airecodes.jacobchapman.kotlincrypto.models.api.CoinMarketCapService
 import com.airecodes.jacobchapman.kotlincrypto.viewmodels.CurrencyListViewModel
 import retrofit2.Retrofit
@@ -38,7 +39,8 @@ class App : Application() {
                 .build()
 
         coinMarketCapService = retrofit.create(CoinMarketCapService::class.java)
-        appDatabase = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "CryptoCurrencyDb").build()
+        appDatabase = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "CryptoCurrencyDb")
+                .build()
 
         cryptoCurrencyRepo = CryptoCurrencyRepo(coinMarketCapService, appDatabase.cryptoCurrencyDao())
         currencyListViewModel = CurrencyListViewModel(cryptoCurrencyRepo)

@@ -18,9 +18,9 @@ data class CryptoCurrency(
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "price_usd")
-    val priceUSD: Double,
+    val price_usd: String,
     @ColumnInfo(name = "price_btc")
-    val priceBTC: Double,
+    val price_btc: String,
     @ColumnInfo(name = "rank")
     val rank: Int
 )

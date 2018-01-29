@@ -144,7 +144,7 @@ class CurrencyListRecyclerAdapter(var currencyList: CurrencyList) : RecyclerView
 
         fun bind(currencyItem: CryptoCurrency){
             itemView.txt_symbol.text = currencyItem.symbol
-            itemView.txt_priceUSD.text = currencyItem.priceUSD.toString()
+            itemView.txt_priceUSD.text = currencyItem.price_usd
         }
 
     }
